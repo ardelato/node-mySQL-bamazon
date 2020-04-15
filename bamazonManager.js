@@ -48,6 +48,7 @@ function start() {
           addMore();
           break;
         case "Add New Product":
+          newItem();
           break;
       }
     })
@@ -129,4 +130,53 @@ function addMore() {
 }
 
 // Add a new product to the database
-function newItem() {}
+function newItem() {
+  inquirer
+    .prompt([
+      {
+        name: "product_name",
+        type: "input",
+        message: "Enter the new product you wish to add: ",
+      },
+      {
+        name: "department_name",
+        type: "input",
+        message: "Enter the department name: ",
+      },
+      {
+        name: "price",
+        type: "number",
+        message: "Enter the price of the product: ",
+      },
+      {
+        name: "stock_quantity",
+        type: "number",
+        message: "Enter the amount of stock for the product: ",
+      },
+    ])
+    .then(function (inquirerResponse) {
+      connection.query(
+        "INSERT INTO products (product_name,department_name,price,stock_quantity) VALUES (?,?,?,?)",
+        [
+          inquirerResponse.product_name,
+          inquirerResponse.department_name,
+          inquirerResponse.price,
+          inquirerResponse.stock_quantity,
+        ],
+        function (error) {
+          if (error) throw error;
+          console.log(
+            "The following product will be added: \n\tProduct Name: %s \n\tDepartment: %s \n\tPrice: %s \n\tStarting Quantity: %i",
+            inquirerResponse.product_name,
+            inquirerResponse.department_name,
+            inquirerResponse.price,
+            inquirerResponse.stock_quantity
+          );
+          start();
+        }
+      );
+    })
+    .catch(function (err) {
+      throw err;
+    });
+}
