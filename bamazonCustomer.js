@@ -73,7 +73,7 @@ function purchase(id, quantity) {
         ],
         function (error) {
           if (error) throw error;
-          console.log("Total: " + totalPrice);
+          console.log("\nTotal: " + totalPrice + "\n");
           start();
         }
       );
